@@ -1,0 +1,214 @@
+:root{
+    --base-width: 1200px;
+    --main-color: #111;
+    --accent-color: #ff5500;
+}
+html {
+    scroll-behavior: smooth;
+}
+body{
+    background-color: #111;
+    color: #e3e3e3;
+    letter-spacing:0.03em;
+    font-family: "Noto Serif JP", serif;
+}
+.sticky-top{background-color: #242424bb;}
+.text-outline{
+    text-shadow:
+    1px 1px 0 #ffffff75,
+   -1px 1px 0 #ffffff75,
+    1px -1px 0 #ffffff75,
+   -1px -1px 0 #ffffff75;
+}
+.main_visual{
+    height: 90vh;
+
+    background-image:
+        linear-gradient(
+            rgba(0,0,0,0.4),
+            rgba(0,0,0,0.6)
+        ),
+        url("../img/main_bg.png");
+
+    background-size: cover;
+    background-position: center;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:#ececec;
+    text-align:center;
+}
+
+.main_visual_inner h2{
+    font-size:clamp(2.5rem, 6vw, 6rem);
+    letter-spacing:0.08em;
+}
+
+.main_visual_inner p{
+    margin-top:1rem;
+    font-size:1.1rem;
+    opacity:0.8;
+    position: relative;
+    overflow: hidden;
+}
+.main_visual_logo img{max-width: 100%; text-align: center;}
+@media (max-width: 1280px) {
+    .main_visual_logo img{max-width: 90%;}
+}
+@media (max-width: 1024px) {
+    .main_visual_logo{
+        text-align: left;
+    }
+    .main_visual_logo img{max-width: 80%;}
+    .main_visual_subcopy,.hero_info{text-align: left;}
+}
+@media (max-width: 768px) {
+    .main_visual_logo{
+        text-align: center;
+    }
+    .main_visual_subcopy,.hero_info{text-align: center;}
+}
+.hero_vertical{
+    position:absolute;
+
+    right:3%;
+    top:15%;
+
+    z-index:5;
+
+    writing-mode:vertical-rl;
+
+    font-size:2rem;
+
+    letter-spacing:0.2em;
+
+    line-height:2;
+
+    text-orientation:mixed;
+
+    line-height:1.8;
+
+    letter-spacing:0.08em;
+
+    font-feature-settings:"palt";
+
+    margin:0;
+    text-align: left;
+}
+/* スマホでは消す or 下へ移動 */
+@media (max-width: 768px) {
+  .hero_vertical {
+    position: static;
+    transform: none;
+    margin-top: 20px;
+    writing-mode:unset;
+    font-size:1.2rem;
+    text-align: center;
+  }
+}
+
+.card-cp-01{
+    background: #242424bb;
+    background-image:
+        linear-gradient(
+            rgba(0,0,0,1),
+            rgba(0,0,0,0.6)
+        ),
+        url("../img/cp-01_bg.png");
+
+    background-size: cover;
+    background-position: center;
+}
+.card-cp-02{
+    background: #242424bb;
+    background-image:
+        linear-gradient(
+            rgba(0,0,0,1),
+            rgba(0,0,0,0.6)
+        ),
+        url("../img/cp-02_bg.png");
+
+    background-size: cover;
+    background-position: center;
+}
+.card-cp-03{
+    background: #242424bb;
+    background-image:
+        linear-gradient(
+            rgba(0,0,0,1),
+            rgba(0,0,0,0.6)
+        ),
+        url("../img/cp-03_bg.png");
+
+    background-size: cover;
+    background-position: center;
+}
+.card-cp-04{
+    background: #242424bb;
+    background-image:
+        linear-gradient(
+            rgba(0,0,0,1),
+            rgba(0,0,0,0.6)
+        ),
+        url("../img/cp-04_bg.png");
+
+    background-size: cover;
+    background-position: center;
+}
+.profile_section{
+    background-image:
+        linear-gradient(
+            rgba(0,0,0,0.4),
+            rgba(0,0,0,0.6)
+        ),
+        url("../img/skill_set_bg.png");
+
+    background-size: cover;
+    background-position: center;
+
+}
+
+.site_footer{
+    background-image: url("../img/footer_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    position: relative;
+}
+.card{
+    background:rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+
+    border:1px solid rgba(255,255,255,0.15);
+    color:#fff;
+}
+
+.nicodb_card{
+    background-image: url("../img/nicodb_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    position: relative;
+}
+.umamune_card{
+    background-image: url("../img/umamune_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    position: relative;
+}
+.libelth_card{
+    background-image: url("../img/libelth_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    position: relative;
+}
