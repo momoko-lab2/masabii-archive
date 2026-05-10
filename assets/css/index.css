@@ -12,6 +12,19 @@ body{
     letter-spacing:0.03em;
     font-family: "Noto Serif JP", serif;
 }
+a {
+  transition: opacity 0.6s;
+}
+a:hover {
+  opacity: 0.6;
+}
+.nav-link {
+  transition: 0.3s;
+}
+
+.nav-link:hover {
+  color: rgba(255,255,255,0.6) !important;
+}
 .sticky-top{background-color: #242424bb;}
 .text-outline{
     text-shadow:
