@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Monochrome Slide Visual</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    width:100%;
+    height:100vh;
+    overflow:hidden;
+    background:url(bg.png);
+    background-size: cover;
+}
+
+/* =========================
+   背景ビジュアル
+========================= */
+.visual{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+}
+
+.visual img{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%) scale(1.05);
+    width:100vw;
+    height:100vh;
+    object-fit:contain;
+
+    filter:grayscale(0%);
+
+    animation: cinematicMove 3.0s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cinematicMove{
+  0% {
+    transform: translate(-50%, -50%) scale(1.05);
+    filter: grayscale(0%) contrast(100%) blur(0px);
+  }
+
+  100% {
+    transform: translate(-60%, -50%) scale(1.20);
+    filter: grayscale(60%) contrast(115%) blur(1.5px);
+  }
+}
+
+/* =========================
+   オーバーレイUI層
+========================= */
+.overlay{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index: 1000  ;
+}
+
+/* ===== 共通パネル ===== */
+.panel{
+    width:600px;
+    padding:24px 32px 24px 62px;
+
+    color:rgba(255,255,255,0.92);
+    font-family: "Helvetica Neue", "Arial", sans-serif;
+
+
+    backdrop-filter: blur(4px);
+
+    /* 影は“柔らかく長く” */
+    box-shadow: 0 10px 20px rgba(103, 103, 103, 0.55);
+
+    position:relative;
+    overflow:hidden;
+
+    /* エッジは少しだけシャープ */
+    border-left: 2px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+}
+
+/* 左の強い情報帯（最重要ポイント） */
+.panel::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    width:60px;
+    height:100%;
+
+}
+
+/* 右側は“抜ける余白”だけ */
+.panel::after{
+    content:"";
+    position:absolute;
+    right:-60px;
+    top:0;
+    width:160px;
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        rgba(255,255,255,0.00),
+        rgba(255,255,255,0.04),
+        rgba(255,255,255,0.00)
+    );
+    opacity:0.6;
+}
+
+/* タイトル（映画字幕寄せ） */
+.title{
+    font-size:20px;
+    font-weight:500;
+    letter-spacing:0.08em;
+    margin-bottom:6px;
+}
+
+/* 説明 */
+.desc{
+    font-size:13px;
+    letter-spacing:0.05em;
+    opacity:0.65;
+    line-height:1.4;
+}
+
+/* =========================
+   LEFT（左から流入）
+========================= */
+.left{
+    position:absolute;
+    left:0px;
+    top:50%;
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.left .panel{
+    opacity:0;
+    transform:translateX(-80px) scale(0.98);
+    animation:leftIn 1s ease forwards;
+}
+
+.left .panel:nth-child(1){ animation-delay:0.1s; }
+.left .panel:nth-child(2){ animation-delay:0.2s; }
+.left .panel:nth-child(3){ animation-delay:0.3s; }
+.left .panel:nth-child(4){ animation-delay:0.4s; }
+
+@keyframes leftIn{
+    to{
+        opacity:1;
+        transform:translateX(0) scale(1);
+    }
+}
+
+/* =========================
+   RIGHT（右から＋下優先）
+========================= */
+.right{
+    position:absolute;
+    right:-60px;
+    top:50%;
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+}
+
+.right .panel{
+    opacity:0;
+    transform:translateX(80px) scale(0.98);
+    animation:rightIn 1s ease forwards;
+}
+
+/* 下ほど早く出る */
+.right .panel:nth-child(4){ animation-delay:0.1s; }
+.right .panel:nth-child(3){ animation-delay:0.2s; }
+.right .panel:nth-child(2){ animation-delay:0.3s; }
+.right .panel:nth-child(1){ animation-delay:0.4s; }
+
+@keyframes rightIn{
+    to{
+        opacity:1;
+        transform:translateX(0) scale(1);
+    }
+}
+
+/* テキスト */
+.title{
+    font-size:1.0em;
+    margin-bottom:16px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    
+    color: #bcbcbc;
+}
+    
+
+.desc{
+    font-size:1.0em;
+    opacity:0.75;
+}
+
+.status{
+  width:600px;
+  color:rgba(255,255,255,0.85);
+  font-family:sans-serif;
+  margin:0% 0;
+}
+
+.label{
+  font-size:12px;
+  letter-spacing:0.12em;
+  opacity:0.7;
+  margin-bottom:6px;
+  padding-left: 20px;
+}
+
+/* 外枠（HUDっぽい枠線） */
+.bar{
+  width:100%;
+  height:10px;
+  background:rgba(228, 228, 228, 0.175);
+  border:1px solid rgba(236, 236, 236, 0.182);
+  position:relative;
+  overflow:hidden;
+
+  /* 少しシャープ */
+  border-radius:2px;
+}
+
+/* 中身（ゲージ） */
+.fill{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.63),
+    rgba(206, 206, 206, 0.7)
+  );
+
+  animation:fillUp 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.fill-2{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.63),
+    rgba(206, 206, 206, 0.7)
+  );
+
+  animation:fillUp2 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.fill-3{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.63),
+    rgba(206, 206, 206, 0.7)
+  );
+
+  animation:fillUp3 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.fill-4{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.63),
+    rgba(206, 206, 206, 0.7)
+  );
+
+  animation:fillUp4 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.fill-5{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.63),
+    rgba(206, 206, 206, 0.7)
+  );
+
+  animation:fillUp5 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.fill-6{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.63),
+    rgba(206, 206, 206, 0.7)
+  );
+
+  animation:fillUp6 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.fill-7{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.63),
+    rgba(206, 206, 206, 0.7)
+  );
+
+  animation:fillUp7 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.fill-8{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.63),
+    rgba(206, 206, 206, 0.7)
+  );
+
+  animation:fillUp8 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.fill-9{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.63),
+    rgba(206, 206, 206, 0.7)
+  );
+
+  animation:fillUp9 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.fill-10{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.63),
+    rgba(206, 206, 206, 0.7)
+  );
+
+  animation:fillUp10 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.fill-11{
+  height:100%;
+  width:0%;
+
+  background:linear-gradient(
+    90deg,
+    rgba(206, 206, 206, 0.63),
+    rgba(206, 206, 206, 0.7)
+  );
+
+  animation:fillUp11 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* アニメ */
+@keyframes fillUp{
+  from{ width:0%; }
+  to{ width:68%; } /* ←ここで数値調整 */
+}
+@keyframes fillUp2{
+  from{ width:0%; }
+  to{ width:15%; } /* ←ここで数値調整 */
+}
+@keyframes fillUp3{
+  from{ width:0%; }
+  to{ width:10%; } /* ←ここで数値調整 */
+}
+@keyframes fillUp4{
+  from{ width:0%; }
+  to{ width:30%; } /* ←ここで数値調整 */
+}
+@keyframes fillUp5{
+  from{ width:0%; }
+  to{ width:25%; } /* ←ここで数値調整 */
+}
+@keyframes fillUp6{
+  from{ width:0%; }
+  to{ width:45%; } /* ←ここで数値調整 */
+}
+@keyframes fillUp7{
+  from{ width:0%; }
+  to{ width:15%; } /* ←ここで数値調整 */
+}
+@keyframes fillUp8{
+  from{ width:0%; }
+  to{ width:35%; } /* ←ここで数値調整 */
+}
+@keyframes fillUp9{
+  from{ width:0%; }
+  to{ width: 35px;%; } /* ←ここで数値調整 */
+}
+@keyframes fillUp10{
+  from{ width:0%; }
+  to{ width:25%; } /* ←ここで数値調整 */
+}
+@keyframes fillUp11{
+  from{ width:0%; }
+  to{ width:45%; } /* ←ここで数値調整 */
+}
+/* =========================
+   経歴バー（NEW）
+========================= */
+.career{
+    position:absolute;
+    bottom:90px;
+    left:50%;
+    transform:translateX(-50%);
+    width:80%;
+    color:#fff;
+    font-family:sans-serif;
+}
+
+.career-label{
+    font-size:12px;
+    opacity:0.6;
+    letter-spacing:0.2em;
+    margin-bottom:10px;
+}
+
+.career-bar{
+    position:relative;
+    height:8px;
+    background:rgba(255,255,255,0.12);
+    border-radius:2px;
+    overflow:hidden;
+}
+
+.career-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#fff,#aaa);
+    transition:width 1.4s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* マーカー */
+.marker{
+    position:absolute;
+    top:-18px;
+    transform:translateX(-50%);
+    font-size:10px;
+    opacity:0.6;
+}
+
+.career-card{
+    margin-top:16px;
+    padding:12px 14px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:6px;
+    font-size:13px;
+    opacity:0.85;
+}
+/* =========================
+   経歴バー（NEW）
+========================= */
+.career{
+    position:absolute;
+    bottom:00px;
+    left:50%;
+    transform:translateX(-50%);
+    width:80%;
+    color:#fff;
+    font-family:sans-serif;
+}
+
+.career-label{
+    font-size:12px;
+    opacity:0.6;
+    letter-spacing:0.2em;
+    margin-bottom:10px;
+}
+
+.career-bar{
+    position:relative;
+    height:8px;
+    background:rgba(255,255,255,0.12);
+    border-radius:2px;
+    overflow:hidden;
+}
+
+.career-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#fff,#aaa);
+    transition:width 1.4s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* マーカー */
+.marker{
+    position:absolute;
+    top:-18px;
+    transform:translateX(-50%);
+    font-size:10px;
+    opacity:0.6;
+}
+
+.career-card{
+    margin-top:16px;
+    padding:12px 14px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:6px;
+    font-size:13px;
+    opacity:0.85;
+}
+</style>
+</head>
+
+<body>
+<div class="visual">
+    <img src="a_digital_photograph_features_a_young_east_asian_m.png" alt="">
+</div>
+
+<!-- UIレイヤー -->
+<div class="overlay">
+    <div style="
+    background: linear-gradient(90deg,#3d3d3d12,#46464600);
+    color: rgb(241, 241, 241);
+    padding: 20px;
+    text-align: left;
+    font-size: 1.8em;
+    border-bottom: 0px solid rgba(214, 214, 214, 0);
+    font-family: serif;
+    width: 50%; font-weight: bold;
+">
+    クリアアサヒで乾杯し、要件定義から未来をつくる開発者<br>
+
+    <span style="font-size: 0.65em;">
+        「プログラマーになって、パパになる」温かい家庭を築くため、今日も走り続ける
+    </span>
+</div>
+    </div>
+    <div style=" position: absolute; top: 0; right: 0; font-size: 3.0em;
+color: rgb(241, 241, 241); padding: 20px; text-align: right; font-size:1.5em; border-bottom: 0px solid rgba(214, 214, 214, 0); font-family: serif;">
+マサビイ　
+<span style="font-size: 0.65em;"></span>Lv : 33</span>
+    </div>
+    <!-- LEFT -->
+    <div class="left">
+        <div class="status">
+            <div class="label">体力</div>
+                <div class="bar">
+                    <div class="fill"></div>
+                </div>
+            </div>
+            <div class="status">
+                <div class="label">気力</div>
+                <div class="bar">
+                    <div class="fill-11"></div>
+                </div>
+            </div>
+            <div class="status">
+                <div class="label">要件定義/詳細設計</div>
+                <div class="bar">
+                    <div class="fill-2"></div>
+                </div>
+            </div>
+
+            <div class="status">
+                <div class="label">XD / Illustrator/Photoshop</div>
+                <div class="bar">
+                    <div class="fill-3"></div>
+                </div>
+            </div>
+            <div class="status">
+                <div class="label">HTML / CSS</div>
+                <div class="bar">
+                    <div class="fill-4"></div>
+                </div>
+            </div>
+            <div class="status">
+                <div class="label">JavaScript / jQuery</div>
+                <div class="bar">
+                    <div class="fill-5"></div>
+                </div>
+            </div>
+            <div class="status">
+                <div class="label">PHP / Laravel</div>
+                <div class="bar">
+                    <div class="fill-6"></div>
+                </div>
+            </div>
+            <div class="status">
+                <div class="label">WordPress</div>
+                <div class="bar">
+                    <div class="fill-7"></div>
+                </div>
+            </div>
+            <div class="status">
+                <div class="label">Python</div>
+                <div class="bar">
+                    <div class="fill-8"></div>
+                </div>
+            </div>
+            <div class="status">
+                <div class="label">Python/Django</div>
+                <div class="bar">
+                    <div class="fill-9"></div>
+                </div>
+            </div>
+            <div class="status">
+                <div class="label">JAVA</div>
+                <div class="bar">
+                    <div class="fill-10"></div>
+                </div>
+            </div>
+        <div class="panel" style="padding-left: 36px; width:70%;">
+            <div class="title">Story</div>
+            <div class="desc" style="font-size: 0.8em;">33歳。派遣SE（SES）。若き日にホリエモンや孫正義氏に憧れ、ITエンジニアを志す。応用情報、G検定を保有。約13年、志は変わらないものの、実務では「万年初学者」として現場を漂流している。AI、参考書、酒。、配信、孤立。 それでも彼は「プログラマーになって、パパになる」夢を捨てられない。</div>
+        </div>
+        </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+        <div class="panel">
+            <div class="title">所持スキル</div>
+            <div class="desc">応用情報技術者</div>
+            <div class="desc">基本情報技術者</div>
+            <div class="desc">G検定</div>
+            <div class="desc">普通自動車第一種免許</div>
+            <div class="desc">配信王の素質</div>
+        </div>
+        <div class="panel">
+            <div class="title">ジョブ</div>
+            <div class="desc">SES：詳細設計</div>
+        </div>
+        <div class="panel">
+            <div class="title">装備</div>
+            <div class="desc">クリアアサヒ<br>本：要件定義の基本と実践<br>本：Web開発入門<br>エンジニアスピリット</div>
+        </div>
+        <div class="panel">
+            <div class="title">特性</div>
+            <div class="desc">アルコール依存症</div>
+        </div>
+    </div>
+    <!-- 経歴バー -->
+    <div class="career">
+        <div class="career-label">CAREER / 2012 → 2026</div>
+
+        <div class="career-bar">
+            <div class="career-fill" id="careerFill"></div>
+
+            <div class="marker" style="left:0%">2012</div>
+            <div class="marker" style="left:8%">2013</div>
+            <div class="marker" style="left:48%">2018</div>
+            <div class="marker" style="left:80%">2022</div>
+            <div class="marker" style="left:100%">2025</div>
+        </div>
+
+        <div class="career-card" id="careerText">
+            2013：京都の旅館でアルバイト開始
+        </div>
+    </div>
+    <div style="position: absolute; bottom: 50px; color: #c5c5c5; padding: 10px 10px 10px 30px; z-index: 11112; font-family: serif;">13 year 116:15:23</div>
+    <div style="position: absolute; bottom: 50px; right:0; color: #dadada; padding: 10px 30px 10px 30px; z-index: 11112; font-size: 1.2em; font-family: serif;">120,325円</div>
+</div>
+<script>
+/* =========================
+   ステータスバー起動
+========================= */
+window.addEventListener("load", () => {
+    document.querySelectorAll(".fill").forEach((bar, i) => {
+        setTimeout(() => {
+            bar.style.width = (50 + i * 10) + "%";
+        }, i * 200);
+    });
+
+    /* =========================
+       経歴アニメーション
+    ========================= */
+    const career = [
+        { p: 0, text: "2012：京都の旅館でアルバイト開始" },
+        { p: 8, text: "2013：SES企業に就職" },
+        { p: 48, text: "2018：スポーツクラブでアルバイト開始" },
+        { p: 80, text: "2022：EC/Webサイト制作企業入社" },
+        { p: 100, text: "2025：派遣SE（SES）入社" }
+    ];
+
+    const fill = document.getElementById("careerFill");
+    const text = document.getElementById("careerText");
+
+    let i = 0;
+
+    function play(){
+        if(i >= career.length) return;
+
+        fill.style.width = career[i].p + "%";
+        text.textContent = career[i].text;
+
+        i++;
+        setTimeout(play, 1400);
+    }
+
+    play();
+});
+</script>
+</body>
+</html>
